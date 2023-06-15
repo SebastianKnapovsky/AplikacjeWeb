@@ -1,0 +1,53 @@
+<div class="container">
+
+    <h1>ManageMe</h1>
+    <h2>John Doe</h2>
+    <hr>
+    <form (ngSubmit)="onSubmit(taskForm)" #taskForm="ngForm">
+        <div class="form-group">
+            <label for="task">Task</label>
+            <input type="text" class="form-control" id="task" placeholder="Enter task" ngModel name="task" required>
+            <label for="type">Type</label>
+            <input type="text" class="form-control" id="type" placeholder="Enter Type" ngModel name="type" required>
+            <label for="describe">Describe</label>
+            <input type="text" class="form-control" id="describe" placeholder="Enter Describe" ngModel name="describe" required>
+            <label for="priority">Priority</label>
+            <input type="text" class="form-control" id="priority" placeholder="Enter Priority" ngModel name="priority" required>
+            <label for="effort">Effort</label>
+            <input type="text" class="form-control" id="effort" placeholder="Enter Effort" ngModel name="effort" required>
+            <small *ngIf="taskForm.invalid && taskForm.dirty" id="errorMessage" class="form-text text-danger">Required
+                fields</small>
+        </div>
+        <button [disabled]="taskForm.invalid" id="submitButton" type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <hr>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Task</th>
+                <th scope="col">Type</th>
+                <th scope="col">Describe</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Effort</th>
+                <th scope="col">Completed</th>
+                <th scope="col">Delete</th>
+                <th scope="col">Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let t of taskArray; index as i">
+                <td>{{t.taskName}}</td>
+                <td>{{t.tasktype}}</td>
+                <td>{{t.taskdescribe}}</td>
+                <td>{{t.taskpriority}}</td>
+                <td>{{t.taskeffort}}</td>
+                <td><input (change)="onCheck(i)" id="myCheckbox" type="checkbox"></td>
+                <td><button class="btn btn-danger btn-sm" (click)="onDelete(i)">Delete</button></td>
+                <td><button class="btn btn-warning btn-sm" (click)="onEdit(i)">Edit</button></td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
