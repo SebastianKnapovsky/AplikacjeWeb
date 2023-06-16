@@ -3,6 +3,36 @@
     <h1>ManageMe</h1>
     <h2>John Doe</h2>
     <hr>
+
+    <form (ngSubmit)="onFunctionalitySubmit(functionalityForm)" #functionalityForm="ngForm" *ngIf="showFunctionalityForm">
+        <div class="form-group">
+            <label for="functionalityName">Functionality Name</label>
+            <input type="text" class="form-control" id="functionalityName" placeholder="Enter functionality name" ngModel name="functionalityName" required>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+    
+    <button (click)="toggleFunctionalityForm()" class="btn btn-secondary">Dodaj funkcjonalność</button>
+
+    <hr>
+    
+    <label for="functionalityFilter">Wybierz funkcjonalność:</label>
+    <select class="form-control" id="functionalityFilter" [(ngModel)]="selectedFunctionality">
+        <option value="">-- Wybierz --</option>
+        <option *ngFor="let functionality of functionalityArray" [value]="functionality">{{ functionality }}</option>
+    </select>
+    
+    <hr>
+    
+    <div *ngIf="selectedFunctionality">
+        <h3>Wybrana funkcjonalność: {{ selectedFunctionality }}</h3>
+    </div>
+
+    <button class="btn btn-primary" (click)="showTaskForm = true">Dodaj zadanie</button>
+
+    <div *ngIf="showTaskForm">
+        <h3>Dodaj nowe zadanie</h3>
     <form (ngSubmit)="onSubmit(taskForm)" #taskForm="ngForm">
         <div class="form-group">
             <label for="task">Task</label>
@@ -20,6 +50,7 @@
         </div>
         <button [disabled]="taskForm.invalid" id="submitButton" type="submit" class="btn btn-primary">Submit</button>
     </form>
+    </div>
 
     <hr>
 
@@ -31,7 +62,7 @@
                 <th scope="col">Describe</th>
                 <th scope="col">Priority</th>
                 <th scope="col">Effort</th>
-                <th scope="col">Completed</th>
+                <th scope="col">Status</th>
                 <th scope="col">Delete</th>
                 <th scope="col">Edit</th>
             </tr>
@@ -43,11 +74,33 @@
                 <td>{{t.taskdescribe}}</td>
                 <td>{{t.taskpriority}}</td>
                 <td>{{t.taskeffort}}</td>
-                <td><input (change)="onCheck(i)" id="myCheckbox" type="checkbox"></td>
+                <select class="form-control" [(ngModel)]="t.taskStatus">
+                    <option value="To Do">To Do</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Done">Done</option>
+                  </select>
                 <td><button class="btn btn-danger btn-sm" (click)="onDelete(i)">Delete</button></td>
                 <td><button class="btn btn-warning btn-sm" (click)="onEdit(i)">Edit</button></td>
             </tr>
 
         </tbody>
     </table>
+
+<table class="table">
+    <thead>
+        <h1>Podsumowanie</h1>
+      <tr>
+        <th scope="col">To Do</th>
+        <th scope="col">In Progress</th>
+        <th scope="col">Done</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ countTasksByStatus('To Do') }}</td>
+        <td>{{ countTasksByStatus('In Progress') }}</td>
+        <td>{{ countTasksByStatus('Done') }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>

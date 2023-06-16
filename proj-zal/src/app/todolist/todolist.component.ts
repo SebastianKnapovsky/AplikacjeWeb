@@ -7,7 +7,13 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./todolist.component.css']
 })
 export class TodolistComponent implements OnInit {
-  taskArray = [{ taskName: 'SQL script',tasktype: 'Implementacja',taskdescribe: 'Przygotowanie skryptów',taskpriority: '1',taskeffort: '3', isCompleted: false }];
+  taskArray = [{ taskName: 'SQL script',tasktype: 'Implementacja',taskdescribe: 'Przygotowanie skryptów',taskpriority: '1',taskeffort: '3', taskStatus: "To Do" }];
+
+  functionalityArray: string[] = []; 
+  selectedFunctionality: string = ''; 
+  showFunctionalityForm: boolean = false; 
+
+  showTaskForm: boolean = false;
 
   constructor() { }
 
@@ -23,7 +29,7 @@ export class TodolistComponent implements OnInit {
       taskdescribe: form.controls['describe'].value,
       taskpriority: form.controls['priority'].value,
       taskeffort: form.controls['effort'].value,
-      isCompleted: false
+      taskStatus: form.controls['taskStatus'].value
     })
     form.reset();
   }
@@ -36,9 +42,37 @@ export class TodolistComponent implements OnInit {
     console.log(index);
   }
 
-  onCheck(index: number) {
-    console.log(this.taskArray);
-    this.taskArray[index].isCompleted = !this.taskArray[index].isCompleted;
+
+
+  
+  onFunctionalitySubmit(functionalityForm: NgForm) {
+    const functionalityName = functionalityForm.value.functionalityName;
+    
+    this.functionalityArray.push(functionalityName);
+    
+    functionalityForm.reset();
   }
 
+  
+  toggleFunctionalityForm() {
+    this.showFunctionalityForm = !this.showFunctionalityForm;
+  }
+
+  
+  onFunctionalitySelectionChange() {
+    
+    console.log('Wybrana funkcjonalność:', this.selectedFunctionality);
+  }
+
+
+  
+  onTaskStatusChange(task: any) {
+    
+    console.log('Zmieniony status dla zadania:', task.taskName, '- Nowy status:', task.taskStatus);
+  }
+  
+
+  countTasksByStatus(status: string): number {
+    return this.taskArray.filter(task => task.taskStatus === status).length;
+  }
 }
