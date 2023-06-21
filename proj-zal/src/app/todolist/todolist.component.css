@@ -14,3 +14,61 @@ h2 {
 #myCheckbox {
     margin-left: 30px;
 }
+.FunctionalityButtons button{
+    margin-right: 10px;
+}
+
+
+
+
+ .popup {
+    position: fixed;
+    padding: 10px;
+    max-width: 500px;
+    border-radius: 0.5em;
+    top: 50%;
+    left: 50%;
+    color: #000;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255,255,255,1);
+    visibility: true;
+    opacity: 0;
+    transition: opacity .5s, visibility 0s linear .5s;
+    z-index: 1;
+ }
+ .popup:target {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+ }
+ .popup .close {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    padding: 5px;
+    color: #000;
+    transition: color .3s;
+    font-size: 2em;
+    line-height: 1.5;
+    font-weight: 700;
+ }
+ .popup .close:hover {
+    color: #f00;
+ }
+ .close-popup {
+    background-color: rgba(0,0,0,.7);
+    cursor: default;
+    position: fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .5s, visibility 0s linear .5s;
+ }
+ .popup:target + .close-popup {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+ }

@@ -14,6 +14,11 @@ export class TodolistComponent implements OnInit {
   showFunctionalityForm: boolean = false; 
 
   showTaskForm: boolean = false;
+  taskEditMode: boolean = false;
+  editIndex: number | null = null;
+
+
+  taskInfoDialogOpen: boolean = false;
 
   constructor() { }
 
@@ -39,7 +44,20 @@ export class TodolistComponent implements OnInit {
     this.taskArray.splice(index, 1);
   }
   onEdit(index: number) {
-    console.log(index);
+    this.showTaskForm = !this.showTaskForm;
+    this.taskEditMode = true;
+    
+  }
+  openTaskInfoDialog(index: number) {
+    this.taskInfoDialogOpen = true;
+  }
+  
+  closeTaskInfoDialog() {
+    this.taskInfoDialogOpen = false;
+  }
+
+
+  onUpdate(taskForm: any) {
   }
 
 
