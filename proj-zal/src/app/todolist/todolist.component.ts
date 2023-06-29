@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Task } from '../models/task';
+import { Functionality } from '../models/functionality';
+import { LocalStorageService } from '../services/LocalStorageService';
 
 @Component({
   selector: 'app-todolist',
@@ -7,7 +10,7 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./todolist.component.css']
 })
 export class TodolistComponent implements OnInit {
-  taskArray = [{ taskName: 'SQL script',tasktype: 'Implementacja',taskdescribe: 'Przygotowanie skryptów',taskpriority: '1',taskeffort: '3', taskStatus: "To Do" }];
+  taskArray: Task[] = [];
 
   functionalityArray: string[] = []; 
   selectedFunctionality: string = ''; 
@@ -15,38 +18,45 @@ export class TodolistComponent implements OnInit {
 
   showTaskForm: boolean = false;
   taskEditMode: boolean = false;
+  functionalityEditMode: boolean = false;
   editIndex: number | null = null;
 
 
   taskInfoDialogOpen: boolean = false;
 
-  constructor() { }
+  constructor(private localStorageService: LocalStorageService) { }
 
   ngOnInit(): void {
+    this.taskArray = this.localStorageService.getAllTasks();
   }
 
   onSubmit(form: NgForm) {
-    console.log(form);
-
-    this.taskArray.push({
-      taskName: form.controls['task'].value,
-      tasktype: form.controls['type'].value,
-      taskdescribe: form.controls['describe'].value,
-      taskpriority: form.controls['priority'].value,
-      taskeffort: form.controls['effort'].value,
-      taskStatus: form.controls['taskStatus'].value
-    })
+    const date = new Date();
+    const task: Task = new Task(
+      0, // Używamy null na razie
+      form.controls['task'].value,
+      form.controls['type'].value,
+      form.controls['describe'].value,
+      form.controls['priority'].value,
+      parseInt(form.controls['effort'].value),
+      date, // Używamy null na razie
+      this.selectedFunctionality, // Używamy null na razie
+      ""
+    );
+  
+    this.localStorageService.addTask(task);
     form.reset();
   }
 
   onDelete(index: number) {
-    console.log(index);
-    this.taskArray.splice(index, 1);
+    debugger;
+    const taskToDelete = this.taskArray[index];
+    this.localStorageService.deleteTask(taskToDelete.id);
   }
   onEdit(index: number) {
-    this.showTaskForm = !this.showTaskForm;
+    this.showTaskForm = true;
     this.taskEditMode = true;
-    
+    this.editIndex = index;
   }
   openTaskInfoDialog(index: number) {
     this.taskInfoDialogOpen = true;
@@ -72,7 +82,18 @@ export class TodolistComponent implements OnInit {
   }
 
   
-  toggleFunctionalityForm() {
+  addFunctionalityForm() {
+    this.showFunctionalityForm = !this.showFunctionalityForm;
+    this.functionalityEditMode = false;
+  }
+  editFunctionalityForm() {
+    this.showFunctionalityForm = !this.showFunctionalityForm;
+    this.functionalityEditMode = true;
+  }
+  infoFunctionalityForm() {
+    this.showFunctionalityForm = !this.showFunctionalityForm;
+  }
+  deleteFunctionalityForm() {
     this.showFunctionalityForm = !this.showFunctionalityForm;
   }
 

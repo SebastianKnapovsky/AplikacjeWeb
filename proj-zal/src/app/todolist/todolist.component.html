@@ -7,7 +7,7 @@
     
     <label for="functionalityFilter">Wybierz funkcjonalność:</label>
     <select class="form-control" id="functionalityFilter" [(ngModel)]="selectedFunctionality">
-        <option value="">-- Wybierz --</option>
+        <option value="">Prace Organizacyjne</option>
         <option *ngFor="let functionality of functionalityArray" [value]="functionality">{{ functionality }}</option>
     </select>
     
@@ -15,19 +15,23 @@
 
     <form (ngSubmit)="onFunctionalitySubmit(functionalityForm)" #functionalityForm="ngForm" *ngIf="showFunctionalityForm">
         <div class="form-group">
+            <h3>{{ functionalityEditMode ? 'Edytuj funkcjonalność' : 'Dodaj nową funkcjonalność' }}</h3>
             <label for="functionalityName">Functionality Name</label>
             <input type="text" class="form-control" id="functionalityName" placeholder="Enter functionality name" ngModel name="functionalityName" required>
-
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <label for="describe">Describe</label>
+            <input type="text" class="form-control" id="describe" placeholder="Enter Describe" ngModel name="describe" required>
+            <label for="priority">Priority</label>
+            <input type="text" class="form-control" id="priority" placeholder="Enter Priority" ngModel name="priority" required>
+            <button id="submitFunctionality" type="submit"  class="btn btn-primary">Submit</button>
         </div>
     </form>
 
 
     <div class="FunctionalityButtons">
-        <button (click)="toggleFunctionalityForm()" class="btn btn-secondary">Dodaj funkcjonalność</button>
-        <button (click)="toggleFunctionalityForm()" class="btn btn-warning">Edytj wybraną funkcjonalność</button>
-        <button (click)="toggleFunctionalityForm()" class="btn btn-info">Więcej informacji o wybranej funkcjonalności</button>
-        <button (click)="toggleFunctionalityForm()" class="btn btn-danger">Usuń wybraną funkcjonalność</button>
+        <button (click)="addFunctionalityForm()" class="btn btn-secondary">Dodaj funkcjonalność</button>
+        <button (click)="editFunctionalityForm()" class="btn btn-warning">Edytj wybraną funkcjonalność</button>
+        <button (click)="infoFunctionalityForm()" class="btn btn-info">Więcej informacji o wybranej funkcjonalności</button>
+        <button (click)="deleteFunctionalityForm()" class="btn btn-danger">Usuń wybraną funkcjonalność</button>
     </div>
 
    
@@ -75,11 +79,11 @@
         </thead>
         <tbody>
             <tr *ngFor="let t of taskArray; index as i">
-                <td>{{t.taskName}}</td>
-                <td>{{t.tasktype}}</td>
-                <td>{{t.taskdescribe}}</td>
-                <td>{{t.taskpriority}}</td>
-                <td>{{t.taskeffort}}</td>
+                <td>{{t.name}}</td>
+                <td>{{t.type}}</td>
+                <td>{{t.description}}</td>
+                <td>{{t.priority}}</td>
+                <td>{{t.effort}}</td>
                 <select class="form-control" [(ngModel)]="t.taskStatus">
                     <option value="To Do">To Do</option>
                     <option value="In Progress">In Progress</option>
