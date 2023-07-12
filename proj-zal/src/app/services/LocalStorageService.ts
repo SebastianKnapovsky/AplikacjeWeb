@@ -56,9 +56,15 @@ export class LocalStorageService {
 
   // Metoda do dodawania nowej funkcjonalności
   addFunctionality(functionality: Functionality): void {
+    debugger;
     const functionalities: Functionality[] = this.getData('functionalities') || [];
     functionalities.push(functionality);
     this.saveData('functionalities', functionalities);
+  }
+  deleteFunctionality(functionalityId: number): void {
+    const functionalities: Functionality[] = this.getData('functionalities') || [];
+    const updatedFunctionalities = functionalities.filter(func => func.id !== functionalityId);
+    this.saveData('functionalities', updatedFunctionalities);
   }
 
   // Metoda do pobierania wszystkich funkcjonalności

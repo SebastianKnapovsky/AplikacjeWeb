@@ -1,63 +1,64 @@
 <div class="container">
 
     <h1>ManageMe</h1>
-    <h2>John Doe</h2>
+    <h2>{{ currentUser }}</h2>
     
     <hr>
     
     <label for="functionalityFilter">Wybierz funkcjonalność:</label>
-    <select class="form-control" id="functionalityFilter" [(ngModel)]="selectedFunctionality">
-        <option value="">Prace Organizacyjne</option>
-        <option *ngFor="let functionality of functionalityArray" [value]="functionality">{{ functionality }}</option>
+    <select class="form-control" id="functionalityFilter" [(ngModel)]="selectedFunctionality" (ngModelChange)="onFunctionalityChange()">
+      <option *ngFor="let functionality of functionalityArray" [ngValue]="functionality">{{ functionality.name }}</option>
     </select>
-    
-    <hr>
 
-    <form (ngSubmit)="onFunctionalitySubmit(functionalityForm)" #functionalityForm="ngForm" *ngIf="showFunctionalityForm">
-        <div class="form-group">
-            <h3>{{ functionalityEditMode ? 'Edytuj funkcjonalność' : 'Dodaj nową funkcjonalność' }}</h3>
-            <label for="functionalityName">Functionality Name</label>
-            <input type="text" class="form-control" id="functionalityName" placeholder="Enter functionality name" ngModel name="functionalityName" required>
-            <label for="describe">Describe</label>
-            <input type="text" class="form-control" id="describe" placeholder="Enter Describe" ngModel name="describe" required>
-            <label for="priority">Priority</label>
-            <input type="text" class="form-control" id="priority" placeholder="Enter Priority" ngModel name="priority" required>
-            <button id="submitFunctionality" type="submit"  class="btn btn-primary">Submit</button>
-        </div>
-    </form>
+<hr>
+
+<div class="FunctionalityButtons">
+    <button (click)="addFunctionalityForm()" class="btn btn-secondary">Dodaj funkcjonalność</button>
+    <button (click)="editFunctionalityForm()" class="btn btn-warning" [disabled]="!selectedFunctionality">Edytuj</button>
+    <button (click)="infoFunctionalityForm()" class="btn btn-info" [disabled]="!selectedFunctionality">Więcej informacji</button>
+    <button (click)="deleteFunctionalityForm()" class="btn btn-danger" [disabled]="!selectedFunctionality">Usuń</button>
+</div>
+
+<form (ngSubmit)="onFunctionalitySubmit(functionalityForm)" #functionalityForm="ngForm" *ngIf="showFunctionalityForm">
+  <div class="form-group">
+    <h3>{{ functionalityEditMode ? 'Edytuj funkcjonalność' : 'Dodaj nową funkcjonalność' }}</h3>
+    <label for="functionalityName">Functionality Name</label>
+    <input type="text" class="form-control" id="functionalityName" placeholder="Enter functionality name" [(ngModel)]="functionality.name" name="functionalityName" required>
+    <label for="description">Description</label>
+    <input type="text" class="form-control" id="description" placeholder="Enter Description" [(ngModel)]="functionality.description" name="description" required>
+    <label for="priority">Priority</label>
+    <input type="text" class="form-control" id="priority" placeholder="Enter Priority" [(ngModel)]="functionality.priority" name="priority" required>
+    <small *ngIf="functionalityForm.invalid && functionalityForm.dirty" id="errorMessage" class="form-text text-danger">Required fields</small>
+  </div>
+  <button [disabled]="functionalityForm.invalid" id="submitFunctionality" type="submit" class="btn btn-primary">{{ functionalityEditMode ? 'Edytuj' : 'Dodaj' }}</button>
+</form>
 
 
-    <div class="FunctionalityButtons">
-        <button (click)="addFunctionalityForm()" class="btn btn-secondary">Dodaj funkcjonalność</button>
-        <button (click)="editFunctionalityForm()" class="btn btn-warning">Edytj wybraną funkcjonalność</button>
-        <button (click)="infoFunctionalityForm()" class="btn btn-info">Więcej informacji o wybranej funkcjonalności</button>
-        <button (click)="deleteFunctionalityForm()" class="btn btn-danger">Usuń wybraną funkcjonalność</button>
-    </div>
 
    
     <hr>
     
 
-    <button class="btn btn-primary" (click)="showTaskForm = true">Dodaj zadanie</button>
+    <button class="btn btn-primary" (click)="addNewTaskForm()">Dodaj zadanie</button>
 
     <div *ngIf="showTaskForm">
         <h3>{{ taskEditMode ? 'Edytuj zadanie' : 'Dodaj nowe zadanie' }}</h3>
         <form (ngSubmit)="taskEditMode ? onUpdate(taskForm) : onSubmit(taskForm)" #taskForm="ngForm">
         <div class="form-group">
             <label for="task">Task</label>
-            <input type="text" class="form-control" id="task" placeholder="Enter task" ngModel name="task" required>
+            <input type="text" class="form-control" id="task" placeholder="Enter task name" [(ngModel)]="task.name" name="name" required>
             <label for="type">Type</label>
-            <input type="text" class="form-control" id="type" placeholder="Enter Type" ngModel name="type" required>
+            <input type="text" class="form-control" id="type" placeholder="Enter Type" [(ngModel)]="task.type" name="type" required>
             <label for="describe">Describe</label>
-            <input type="text" class="form-control" id="describe" placeholder="Enter Describe" ngModel name="describe" required>
+            <input type="text" class="form-control" id="describe" placeholder="Enter Describe" [(ngModel)]="task.description" name="description" required>
             <label for="priority">Priority</label>
-            <input type="text" class="form-control" id="priority" placeholder="Enter Priority" ngModel name="priority" required>
+            <input type="text" class="form-control" id="priority" placeholder="Enter Priority" [(ngModel)]="task.priority" name="priority" required>
             <label for="effort">Effort</label>
-            <input type="text" class="form-control" id="effort" placeholder="Enter Effort" ngModel name="effort" required>
+            <input type="text" class="form-control" id="effort" placeholder="Enter Effort" [(ngModel)]="task.effort" name="effort" required>
             <small *ngIf="taskForm.invalid && taskForm.dirty" id="errorMessage" class="form-text text-danger">Required
                 fields</small>
         </div>
-        <button [disabled]="taskForm.invalid" id="submitButton" type="submit" class="btn btn-primary">Submit</button>
+        <button [disabled]="taskForm.invalid" id="submitButton" type="submit" class="btn btn-primary">{{ taskEditMode ? 'Edytuj' : 'Dodaj' }}</button>
     </form>
     </div>
 
