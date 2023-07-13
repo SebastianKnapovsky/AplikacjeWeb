@@ -16,7 +16,6 @@ export class TodolistComponent implements OnInit {
   time: Date = new Date();
   task: Task = new Task(0, '', '', '', '', 0, this.time, '', '',);
 
-
   currentUser: string = "John Doe";
 
   showTaskForm: boolean = false;
@@ -49,7 +48,7 @@ export class TodolistComponent implements OnInit {
   addDefaultFunctionality() {
     const date = new Date();
     const newFunctionality: Functionality = new Functionality(
-      0, // Używamy null na razie
+      0,
       "Prace Organizacyjne",
       "organizacja",
       "1",
@@ -91,8 +90,8 @@ export class TodolistComponent implements OnInit {
       this.task.description,
       this.task.priority,
       this.task.effort,
-      date, // Używamy null na razie
-      this.selectedFunctionality?.name ? this.selectedFunctionality.name.toString() : '', // Używamy null na razie
+      date,
+      this.selectedFunctionality?.name ? this.selectedFunctionality.name.toString() : '',
       this.defoulttaskStatus
     );
     const tasksId = this.selectedFunctionality?.id ? this.selectedFunctionality.id : 0
@@ -138,7 +137,6 @@ export class TodolistComponent implements OnInit {
     this.taskInfoDialogOpen = false;
   }
   infoFunctionalityForm() {
-    debugger;
     this.functionalityArray = this.localStorageService.getAllFunctionalities();
     const tasksId = this.selectedFunctionality?.id ? this.selectedFunctionality.id : 0
     this.selectedFunctionality = this.functionalityArray[tasksId];
@@ -175,10 +173,8 @@ export class TodolistComponent implements OnInit {
 
   onFunctionalitySubmit(functionalityForm: NgForm) {
     if (this.functionalityEditMode) {
-      // Edycja istniejącej funkcjonalności
       const editedFunctionalityIndex = this.functionalityArray.findIndex(f => f.id === this.functionality.id);
       if (editedFunctionalityIndex !== -1) {
-        // Nadpisz wartości pola funkcjonalności z właściwości `functionality`
         this.functionalityArray[editedFunctionalityIndex].name = this.functionality.name;
         this.functionalityArray[editedFunctionalityIndex].description = this.functionality.description;
         this.functionalityArray[editedFunctionalityIndex].priority = this.functionality.priority;
@@ -186,9 +182,7 @@ export class TodolistComponent implements OnInit {
         this.localStorageService.editFunctionality(this.functionality, tasksId);
       }
     } else {
-      // Dodawanie nowej funkcjonalności
       const newFunctionality = new Functionality(
-        // Przypisz unikalne ID, np. na podstawie długości tablicy
         this.functionalityArray.length,
         this.functionality.name,
         this.functionality.description,
@@ -267,12 +261,6 @@ export class TodolistComponent implements OnInit {
     this.functionalityValidation();
     this.resetFunctionality();
   }
-
-
-  onFunctionalitySelectionChange() {
-
-  }
-
   onTaskStatusChange(newStatus: string, task: any) {
 
     task.taskStatus = newStatus;

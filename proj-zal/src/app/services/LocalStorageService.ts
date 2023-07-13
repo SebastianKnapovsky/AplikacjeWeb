@@ -9,23 +9,19 @@ export class LocalStorageService {
 
   constructor() { }
 
-  // Metoda do zapisywania danych w Local Storage
   saveData(key: string, data: any): void {
     localStorage.setItem(key, JSON.stringify(data));
   }
 
-  // Metoda do odczytywania danych z Local Storage
   getData(key: string): any {
     const data = localStorage.getItem(key);
     return data ? JSON.parse(data) : null;
   }
 
-  // Metoda do usuwania danych z Local Storage
   removeData(key: string): void {
     localStorage.removeItem(key);
   }
 
-  // Metoda do dodawania nowego zadania
   addTask(task: Task, tasksId: number): void {
 
     const functionalities: Functionality[] = this.getData('functionalities') || [];
@@ -34,7 +30,6 @@ export class LocalStorageService {
     this.saveData('functionalities', functionalities);
   }
 
-  // Metoda do aktualizacji istniejącego zadania
   updateTask(task: Task, tasksId: number): void {
 
     const functionalities: Functionality[] = this.getData('functionalities') || [];
@@ -46,7 +41,6 @@ export class LocalStorageService {
     }
   }
 
-  // Metoda do usuwania zadania
   deleteTask(taskId: number, tasksId: number): void {
 
     var functionalities: Functionality[] = this.getData('functionalities') || [];
@@ -58,7 +52,6 @@ export class LocalStorageService {
     this.saveData('functionalities', functionalities);
   }
 
-  // Metoda do pobierania wszystkich zadań
   getAllTasks(tasksId: number): Task[] {
 
     const functionalities: Functionality[] = this.getData('functionalities') || [];
