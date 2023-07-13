@@ -54,9 +54,7 @@ export class LocalStorageService {
     return this.getData('tasks') || [];
   }
 
-  // Metoda do dodawania nowej funkcjonalności
   addFunctionality(functionality: Functionality): void {
-    debugger;
     const functionalities: Functionality[] = this.getData('functionalities') || [];
     functionalities.push(functionality);
     this.saveData('functionalities', functionalities);
@@ -66,8 +64,6 @@ export class LocalStorageService {
     const updatedFunctionalities = functionalities.filter(func => func.id !== functionalityId);
     this.saveData('functionalities', updatedFunctionalities);
   }
-
-  // Metoda do pobierania wszystkich funkcjonalności
   getAllFunctionalities(): Functionality[] {
     return this.getData('functionalities') || [];
   }

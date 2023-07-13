@@ -14,9 +14,9 @@
 
 <div class="FunctionalityButtons">
     <button (click)="addFunctionalityForm()" class="btn btn-secondary">Dodaj funkcjonalność</button>
-    <button (click)="editFunctionalityForm()" class="btn btn-warning" [disabled]="!selectedFunctionality">Edytuj</button>
+    <button (click)="editFunctionalityForm()" class="btn btn-warning" [disabled]="!selectedFunctionality|| !canDeleteFunctionality">Edytuj</button>
     <button (click)="infoFunctionalityForm()" class="btn btn-info" [disabled]="!selectedFunctionality">Więcej informacji</button>
-    <button (click)="deleteFunctionalityForm()" class="btn btn-danger" [disabled]="!selectedFunctionality">Usuń</button>
+    <button (click)="deleteFunctionalityForm()" class="btn btn-danger" [disabled]="!selectedFunctionality || !canDeleteFunctionality">Usuń</button>
 </div>
 
 <form (ngSubmit)="onFunctionalitySubmit(functionalityForm)" #functionalityForm="ngForm" *ngIf="showFunctionalityForm">
@@ -85,7 +85,7 @@
                 <td>{{t.description}}</td>
                 <td>{{t.priority}}</td>
                 <td>{{t.effort}}</td>
-                <select class="form-control" [(ngModel)]="t.taskStatus">
+                <select class="form-control" [(ngModel)]="t.taskStatus" (ngModelChange)="onTaskStatusChange($event, t)">
                     <option value="To Do">To Do</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Done">Done</option>
@@ -100,16 +100,37 @@
 
     
 
-    <div *ngIf="taskInfoDialogOpen" >
-        <a href="#popup" class="btn">Click Here</a>
-    <div id="popup" class="popup">
-        <a href="#" class="close">&times;</a>
-        <h2>Title Popup</h2>
-        <p>L.</p>
+    <div *ngIf="taskInfoDialogOpen" class="popup">
+      <div class="popup-content">
+        <a href="#" class="close" (click)="closeTaskInfoDialog()">&times;</a>
+        <h1>Dodatkowe informacje</h1>
+        <p>Nazwa: {{ selectedTask?.name }}</p>
+        <p>Typ: {{ selectedTask?.type }}</p>
+        <p>Opis: {{ selectedTask?.description }}</p>
+        <p>Ważność: {{ selectedTask?.priority }}</p>
+        <p>Nakład Pracy: {{ selectedTask?.effort }}</p>
+        <p>Data Dodania: {{ selectedTask?.dateAdded }}</p>
+        <p>Status: {{ selectedTask?.taskStatus }}</p>
+        <p>Zadanie w ramach funkcjonalności: {{ selectedTask?.functionalityName }}</p>
+      </div>
     </div>
-<a href="#" class="close-popup"></a>
-    </div>
+    <div *ngIf="taskInfoDialogOpen" class="close-popup" (click)="closeTaskInfoDialog()"></div>
         
+    <div *ngIf="functionalityInfoDialogOpen" class="popup">
+      <div class="popup-content">
+        <a href="#" class="close" (click)="closeFunctionalityInfoDialog()">&times;</a>
+        <h1>Dodatkowe informacje</h1>
+        <p>Nazwa: {{ selectedFunctionality?.name }}</p>
+        <p>Opis: {{ selectedFunctionality?.description }}</p>
+        <p>Ważność: {{ selectedFunctionality?.priority }}</p>
+        <p>Właściciel: {{ selectedFunctionality?.projectOwner }}</p>
+        <p>Przypisane zadania:</p>
+            <ul>
+              <li *ngFor="let task of selectedFunctionality?.tasks">{{ task.name }}{{task.taskStatus}}</li>
+            </ul>
+      </div>
+    </div>
+    <div *ngIf="functionalityInfoDialogOpen" class="close-popup" (click)="closeFunctionalityInfoDialog()"></div>
 
 <table class="table">
     <thead>

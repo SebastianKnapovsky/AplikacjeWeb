@@ -24,41 +24,71 @@ export class TodolistComponent implements OnInit {
 
   selectedTask: Task | null = null;
   selectedFunctionality: Functionality | null = null;
+  canDeleteFunctionality: boolean = true;
   showFunctionalityForm: boolean = false; 
   functionalityEditMode: boolean = false;
   
   defoulttaskStatus: string = "To Do";
   editIndex: number | null = null;
   taskInfoDialogOpen: boolean = false;
+  functionalityInfoDialogOpen:  boolean = false;
 
   constructor(private localStorageService: LocalStorageService) { }
 
   ngOnInit(): void {
     this.taskArray = this.localStorageService.getAllTasks();
     this.functionalityArray = this.localStorageService.getAllFunctionalities();
+    if (this.functionalityArray.length == 0) {
+      this.addDefaultFunctionality();
+    }
+    this.selectedFunctionality = this.functionalityArray[0]; 
+    this.functionalityValidation()
+    
+  }
+  addDefaultFunctionality() {
+    const date = new Date();
+    const newFunctionality: Functionality = new Functionality(
+      0, // Używamy null na razie
+      "Prace Organizacyjne",
+      "organizacja",
+      "1",
+      this.currentUser,
+      [],
+    );
+  
+    this.localStorageService.addFunctionality(newFunctionality);
+    this.functionalityArray = this.localStorageService.getAllFunctionalities();
+  }
+  functionalityValidation(){
+    if(this.selectedFunctionality?.name == "Prace Organizacyjne"){
+      this.canDeleteFunctionality = false;
+    }
+    else{
+      this.canDeleteFunctionality = true;
+    }
   }
 
   addNewTaskForm(): void {
-    debugger;
     this.taskEditMode = false;
     this.showTaskForm = !this.showTaskForm;
   }
 
   onSubmit(form: NgForm) {
     const date = new Date();
-    const task: Task = new Task(
-      0, // Używamy null na razie
-      form.controls['name'].value,
-      form.controls['type'].value,
-      form.controls['describe'].value,
-      form.controls['priority'].value,
-      parseInt(form.controls['effort'].value),
+    const newTask: Task = new Task(
+      this.taskArray.length + 1, // Używamy null na razie
+      this.task.name,
+      this.task.type,
+      this.task.description,
+      this.task.priority,
+      this.task.effort,
       date, // Używamy null na razie
-      "", // Używamy null na razie
+      this.selectedFunctionality?.name ? this.selectedFunctionality.name.toString() : '', // Używamy null na razie
       this.defoulttaskStatus
     );
   
-    this.localStorageService.addTask(task);
+    this.localStorageService.addTask(newTask);
+    this.taskArray = this.localStorageService.getAllTasks();
     form.reset();
     this.showTaskForm = false;
   }
@@ -66,12 +96,13 @@ export class TodolistComponent implements OnInit {
   onDelete(index: number) {
     const taskToDelete = this.taskArray[index];
     this.localStorageService.deleteTask(taskToDelete.id);
+    this.taskArray = this.localStorageService.getAllTasks();
   }
   onEdit(index: number) {
     this.showTaskForm = !this.showTaskForm;
     this.taskEditMode = true;
     this.editIndex = index;
-    this.selectedTask;
+    this.selectedTask = this.taskArray[this.editIndex];
     if(this.selectedTask){
       this.task = {
         id: this.selectedTask.id,
@@ -88,9 +119,23 @@ export class TodolistComponent implements OnInit {
     
   }
   openTaskInfoDialog(index: number) {
+    this.selectedTask = this.taskArray[index];
     this.taskInfoDialogOpen = true;
   }
   
+  closeTaskInfoDialog() {
+    this.selectedTask = null;
+    this.taskInfoDialogOpen = false;
+  }
+  infoFunctionalityForm() {
+    debugger;
+    // this.selectedFunctionality = this.functionalityArray[0];
+    this.functionalityInfoDialogOpen = true;
+  }
+  
+  closeFunctionalityInfoDialog() {
+    this.functionalityInfoDialogOpen = false;
+  }
   onUpdate(taskForm: NgForm) {
     const editedTaskIndex = this.taskArray.findIndex(f => f.id === this.task.id);
     this.taskArray[editedTaskIndex].name = this.task.name;
@@ -107,6 +152,7 @@ export class TodolistComponent implements OnInit {
 
   onFunctionalityChange() {
     this.showFunctionalityForm = false;
+    this.functionalityValidation();
   }
 
   onFunctionalitySubmit(functionalityForm: NgForm) {
@@ -130,13 +176,14 @@ export class TodolistComponent implements OnInit {
         this.currentUser,
         this.taskArray
       );
-  
-      this.functionalityArray.push(newFunctionality);
+      this.localStorageService.addFunctionality(newFunctionality)
+      this.functionalityArray = this.localStorageService.getAllFunctionalities();
+      this.selectedFunctionality = this.functionalityArray[0]; 
     }
   
     functionalityForm.reset();
-    this.resetFunctionality();
     this.showFunctionalityForm = false;
+    this.resetFunctionality();
   }
   
   resetFunctionality() {
@@ -187,9 +234,7 @@ export class TodolistComponent implements OnInit {
       this.resetFunctionality();
     }
   }
-  infoFunctionalityForm() {
-    this.showFunctionalityForm = !this.showFunctionalityForm;
-  }
+  
   deleteFunctionalityForm() {
     if (this.selectedFunctionality) {
       const functionalityIndex = this.functionalityArray.findIndex(func => func.id === this.selectedFunctionality?.id);
@@ -198,21 +243,24 @@ export class TodolistComponent implements OnInit {
         this.localStorageService.deleteFunctionality(this.selectedFunctionality.id);
       }
     }
-  
+    this.functionalityArray = this.localStorageService.getAllFunctionalities();
+    this.selectedFunctionality = this.functionalityArray[0]; 
     this.showFunctionalityForm = false;
+    this.functionalityValidation();
     this.resetFunctionality();
   }
 
   
   onFunctionalitySelectionChange() {
-    console.log('Wybrana funkcjonalność:', this.selectedFunctionality);
+    
   }
 
-  onTaskStatusChange(task: any) {
-    console.log('Zmieniony status dla zadania:', task.taskName, '- Nowy status:', task.taskStatus);
+  onTaskStatusChange(newStatus: string, task: any) {
+    debugger;
+    task.taskStatus = newStatus;
+    this.localStorageService.updateTask(task);
   }
   
-
   countTasksByStatus(status: string): number {
     return this.taskArray.filter(task => task.taskStatus === status).length;
   }
