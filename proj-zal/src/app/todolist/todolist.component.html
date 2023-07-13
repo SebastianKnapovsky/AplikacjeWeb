@@ -1,140 +1,155 @@
 <div class="container">
 
-    <h1>ManageMe</h1>
-    <h2>{{ currentUser }}</h2>
-    
-    <hr>
-    
-    <label for="functionalityFilter">Wybierz funkcjonalność:</label>
-    <select class="form-control" id="functionalityFilter" [(ngModel)]="selectedFunctionality" (ngModelChange)="onFunctionalityChange()">
-      <option *ngFor="let functionality of functionalityArray" [ngValue]="functionality">{{ functionality.name }}</option>
-    </select>
+  <h1>ManageMe</h1>
+  <h2>{{ currentUser }}</h2>
 
-<hr>
+  <hr>
 
-<div class="FunctionalityButtons">
+  <label for="functionalityFilter">Wybierz funkcjonalność:</label>
+  <select class="form-control" id="functionalityFilter" [(ngModel)]="selectedFunctionality"
+    (ngModelChange)="onFunctionalityChange()">
+    <option *ngFor="let functionality of functionalityArray" [ngValue]="functionality">{{ functionality.name }}</option>
+  </select>
+
+  <hr>
+
+  <div class="FunctionalityButtons">
     <button (click)="addFunctionalityForm()" class="btn btn-secondary">Dodaj funkcjonalność</button>
-    <button (click)="editFunctionalityForm()" class="btn btn-warning" [disabled]="!selectedFunctionality|| !canDeleteFunctionality">Edytuj</button>
-    <button (click)="infoFunctionalityForm()" class="btn btn-info" [disabled]="!selectedFunctionality">Więcej informacji</button>
-    <button (click)="deleteFunctionalityForm()" class="btn btn-danger" [disabled]="!selectedFunctionality || !canDeleteFunctionality">Usuń</button>
-</div>
-
-<form (ngSubmit)="onFunctionalitySubmit(functionalityForm)" #functionalityForm="ngForm" *ngIf="showFunctionalityForm">
-  <div class="form-group">
-    <h3>{{ functionalityEditMode ? 'Edytuj funkcjonalność' : 'Dodaj nową funkcjonalność' }}</h3>
-    <label for="functionalityName">Functionality Name</label>
-    <input type="text" class="form-control" id="functionalityName" placeholder="Enter functionality name" [(ngModel)]="functionality.name" name="functionalityName" required>
-    <label for="description">Description</label>
-    <input type="text" class="form-control" id="description" placeholder="Enter Description" [(ngModel)]="functionality.description" name="description" required>
-    <label for="priority">Priority</label>
-    <input type="text" class="form-control" id="priority" placeholder="Enter Priority" [(ngModel)]="functionality.priority" name="priority" required>
-    <small *ngIf="functionalityForm.invalid && functionalityForm.dirty" id="errorMessage" class="form-text text-danger">Required fields</small>
+    <button (click)="editFunctionalityForm()" class="btn btn-warning"
+      [disabled]="!selectedFunctionality|| !canDeleteFunctionality">Edytuj</button>
+    <button (click)="infoFunctionalityForm()" class="btn btn-info" [disabled]="!selectedFunctionality">Więcej
+      informacji</button>
+    <button (click)="deleteFunctionalityForm()" class="btn btn-danger"
+      [disabled]="!selectedFunctionality || !canDeleteFunctionality">Usuń</button>
   </div>
-  <button [disabled]="functionalityForm.invalid" id="submitFunctionality" type="submit" class="btn btn-primary">{{ functionalityEditMode ? 'Edytuj' : 'Dodaj' }}</button>
-</form>
+
+  <form (ngSubmit)="onFunctionalitySubmit(functionalityForm)" #functionalityForm="ngForm" *ngIf="showFunctionalityForm">
+    <div class="form-group">
+      <h3>{{ functionalityEditMode ? 'Edytuj funkcjonalność' : 'Dodaj nową funkcjonalność' }}</h3>
+      <label for="functionalityName">Functionality Name</label>
+      <input type="text" class="form-control" id="functionalityName" placeholder="Enter functionality name"
+        [(ngModel)]="functionality.name" name="functionalityName" required>
+      <label for="description">Description</label>
+      <input type="text" class="form-control" id="description" placeholder="Enter Description"
+        [(ngModel)]="functionality.description" name="description" required>
+      <label for="priority">Priority</label>
+      <input type="text" class="form-control" id="priority" placeholder="Enter Priority"
+        [(ngModel)]="functionality.priority" name="priority" required>
+      <small *ngIf="functionalityForm.invalid && functionalityForm.dirty" id="errorMessage"
+        class="form-text text-danger">Required fields</small>
+    </div>
+    <button [disabled]="functionalityForm.invalid" id="submitFunctionality" type="submit" class="btn btn-primary">{{
+      functionalityEditMode ? 'Edytuj' : 'Dodaj' }}</button>
+  </form>
 
 
 
-   
-    <hr>
-    
 
-    <button class="btn btn-primary" (click)="addNewTaskForm()">Dodaj zadanie</button>
+  <hr>
 
-    <div *ngIf="showTaskForm">
-        <h3>{{ taskEditMode ? 'Edytuj zadanie' : 'Dodaj nowe zadanie' }}</h3>
-        <form (ngSubmit)="taskEditMode ? onUpdate(taskForm) : onSubmit(taskForm)" #taskForm="ngForm">
-        <div class="form-group">
-            <label for="task">Task</label>
-            <input type="text" class="form-control" id="task" placeholder="Enter task name" [(ngModel)]="task.name" name="name" required>
-            <label for="type">Type</label>
-            <input type="text" class="form-control" id="type" placeholder="Enter Type" [(ngModel)]="task.type" name="type" required>
-            <label for="describe">Describe</label>
-            <input type="text" class="form-control" id="describe" placeholder="Enter Describe" [(ngModel)]="task.description" name="description" required>
-            <label for="priority">Priority</label>
-            <input type="text" class="form-control" id="priority" placeholder="Enter Priority" [(ngModel)]="task.priority" name="priority" required>
-            <label for="effort">Effort</label>
-            <input type="text" class="form-control" id="effort" placeholder="Enter Effort" [(ngModel)]="task.effort" name="effort" required>
-            <small *ngIf="taskForm.invalid && taskForm.dirty" id="errorMessage" class="form-text text-danger">Required
-                fields</small>
-        </div>
-        <button [disabled]="taskForm.invalid" id="submitButton" type="submit" class="btn btn-primary">{{ taskEditMode ? 'Edytuj' : 'Dodaj' }}</button>
+
+  <button class="btn btn-primary" (click)="addNewTaskForm()">Dodaj zadanie</button>
+
+  <div *ngIf="showTaskForm">
+    <h3>{{ taskEditMode ? 'Edytuj zadanie' : 'Dodaj nowe zadanie' }}</h3>
+    <form (ngSubmit)="taskEditMode ? onUpdate(taskForm) : onSubmit(taskForm)" #taskForm="ngForm">
+      <div class="form-group">
+        <label for="task">Task</label>
+        <input type="text" class="form-control" id="task" placeholder="Enter task name" [(ngModel)]="task.name"
+          name="name" required>
+        <label for="type">Type</label>
+        <input type="text" class="form-control" id="type" placeholder="Enter Type" [(ngModel)]="task.type" name="type"
+          required>
+        <label for="describe">Describe</label>
+        <input type="text" class="form-control" id="describe" placeholder="Enter Describe"
+          [(ngModel)]="task.description" name="description" required>
+        <label for="priority">Priority</label>
+        <input type="text" class="form-control" id="priority" placeholder="Enter Priority" [(ngModel)]="task.priority"
+          name="priority" required>
+        <label for="effort">Effort</label>
+        <input type="text" class="form-control" id="effort" placeholder="Enter Effort" [(ngModel)]="task.effort"
+          name="effort" required>
+        <small *ngIf="taskForm.invalid && taskForm.dirty" id="errorMessage" class="form-text text-danger">Required
+          fields</small>
+      </div>
+      <button [disabled]="taskForm.invalid" id="submitButton" type="submit" class="btn btn-primary">{{ taskEditMode ?
+        'Edytuj' : 'Dodaj' }}</button>
     </form>
-    </div>
+  </div>
 
-    <hr>
+  <hr>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Task</th>
-                <th scope="col">Type</th>
-                <th scope="col">Describe</th>
-                <th scope="col">Priority</th>
-                <th scope="col">Effort</th>
-                <th scope="col">Status</th>
-                <th scope="col">Delete</th>
-                <th scope="col">Edit</th>
-                <th scope="col">Info</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let t of taskArray; index as i">
-                <td>{{t.name}}</td>
-                <td>{{t.type}}</td>
-                <td>{{t.description}}</td>
-                <td>{{t.priority}}</td>
-                <td>{{t.effort}}</td>
-                <select class="form-control" [(ngModel)]="t.taskStatus" (ngModelChange)="onTaskStatusChange($event, t)">
-                    <option value="To Do">To Do</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Done">Done</option>
-                  </select>
-                <td><button class="btn btn-danger btn-sm" (click)="onDelete(i)">Delete</button></td>
-                <td><button class="btn btn-warning btn-sm" (click)="onEdit(i)">Edit</button></td>
-                <td><button class="btn btn-info btn-sm" (click)="openTaskInfoDialog(i)">Info</button></td>
-            </tr>
-
-        </tbody>
-    </table>
-
-    
-
-    <div *ngIf="taskInfoDialogOpen" class="popup">
-      <div class="popup-content">
-        <a href="#" class="close" (click)="closeTaskInfoDialog()">&times;</a>
-        <h1>Dodatkowe informacje</h1>
-        <p>Nazwa: {{ selectedTask?.name }}</p>
-        <p>Typ: {{ selectedTask?.type }}</p>
-        <p>Opis: {{ selectedTask?.description }}</p>
-        <p>Ważność: {{ selectedTask?.priority }}</p>
-        <p>Nakład Pracy: {{ selectedTask?.effort }}</p>
-        <p>Data Dodania: {{ selectedTask?.dateAdded }}</p>
-        <p>Status: {{ selectedTask?.taskStatus }}</p>
-        <p>Zadanie w ramach funkcjonalności: {{ selectedTask?.functionalityName }}</p>
-      </div>
-    </div>
-    <div *ngIf="taskInfoDialogOpen" class="close-popup" (click)="closeTaskInfoDialog()"></div>
-        
-    <div *ngIf="functionalityInfoDialogOpen" class="popup">
-      <div class="popup-content">
-        <a href="#" class="close" (click)="closeFunctionalityInfoDialog()">&times;</a>
-        <h1>Dodatkowe informacje</h1>
-        <p>Nazwa: {{ selectedFunctionality?.name }}</p>
-        <p>Opis: {{ selectedFunctionality?.description }}</p>
-        <p>Ważność: {{ selectedFunctionality?.priority }}</p>
-        <p>Właściciel: {{ selectedFunctionality?.projectOwner }}</p>
-        <p>Przypisane zadania:</p>
-            <ul>
-              <li *ngFor="let task of selectedFunctionality?.tasks">{{ task.name }}{{task.taskStatus}}</li>
-            </ul>
-      </div>
-    </div>
-    <div *ngIf="functionalityInfoDialogOpen" class="close-popup" (click)="closeFunctionalityInfoDialog()"></div>
-
-<table class="table">
+  <table class="table">
     <thead>
-        <h1>Podsumowanie</h1>
+      <tr>
+        <th scope="col">Task</th>
+        <th scope="col">Type</th>
+        <th scope="col">Describe</th>
+        <th scope="col">Priority</th>
+        <th scope="col">Effort</th>
+        <th scope="col">Status</th>
+        <th scope="col">Delete</th>
+        <th scope="col">Edit</th>
+        <th scope="col">Info</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let t of taskArray; index as i">
+        <td>{{t.name}}</td>
+        <td>{{t.type}}</td>
+        <td>{{t.description}}</td>
+        <td>{{t.priority}}</td>
+        <td>{{t.effort}}</td>
+        <select class="form-control" [(ngModel)]="t.taskStatus" (ngModelChange)="onTaskStatusChange($event, t)">
+          <option value="To Do">To Do</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Done">Done</option>
+        </select>
+        <td><button class="btn btn-danger btn-sm" (click)="onDelete(i)">Delete</button></td>
+        <td><button class="btn btn-warning btn-sm" (click)="onEdit(i)">Edit</button></td>
+        <td><button class="btn btn-info btn-sm" (click)="openTaskInfoDialog(i)">Info</button></td>
+      </tr>
+
+    </tbody>
+  </table>
+
+
+
+  <div *ngIf="taskInfoDialogOpen" class="popup">
+    <div class="popup-content">
+      <a href="#" class="close" (click)="closeTaskInfoDialog()">&times;</a>
+      <h1>Dodatkowe informacje</h1>
+      <p>Nazwa: {{ selectedTask?.name }}</p>
+      <p>Typ: {{ selectedTask?.type }}</p>
+      <p>Opis: {{ selectedTask?.description }}</p>
+      <p>Ważność: {{ selectedTask?.priority }}</p>
+      <p>Nakład Pracy: {{ selectedTask?.effort }}</p>
+      <p>Data Dodania: {{ selectedTask?.dateAdded }}</p>
+      <p>Status: {{ selectedTask?.taskStatus }}</p>
+      <p>Zadanie w ramach funkcjonalności: {{ selectedTask?.functionalityName }}</p>
+    </div>
+  </div>
+  <div *ngIf="taskInfoDialogOpen" class="close-popup" (click)="closeTaskInfoDialog()"></div>
+
+  <div *ngIf="functionalityInfoDialogOpen" class="popup">
+    <div class="popup-content">
+      <a href="#" class="close" (click)="closeFunctionalityInfoDialog()">&times;</a>
+      <h1>Dodatkowe informacje</h1>
+      <p>Nazwa: {{ selectedFunctionality?.name }}</p>
+      <p>Opis: {{ selectedFunctionality?.description }}</p>
+      <p>Ważność: {{ selectedFunctionality?.priority }}</p>
+      <p>Właściciel: {{ selectedFunctionality?.projectOwner }}</p>
+      <p>Przypisane zadania:</p>
+      <ul>
+        <li *ngFor="let task of selectedFunctionality?.tasks">{{ task.name }}{{task.taskStatus}}</li>
+      </ul>
+    </div>
+  </div>
+  <div *ngIf="functionalityInfoDialogOpen" class="close-popup" (click)="closeFunctionalityInfoDialog()"></div>
+
+  <table class="table">
+    <thead>
+      <h1>Podsumowanie</h1>
       <tr>
         <th scope="col">To Do</th>
         <th scope="col">In Progress</th>

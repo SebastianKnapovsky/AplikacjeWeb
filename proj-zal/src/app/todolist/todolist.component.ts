@@ -12,10 +12,10 @@ import { LocalStorageService } from '../services/LocalStorageService';
 export class TodolistComponent implements OnInit {
   taskArray: Task[] = [];
   functionalityArray: Functionality[] = [];
-  functionality: Functionality = new Functionality(0, '', '', '','',[]);
+  functionality: Functionality = new Functionality(0, '', '', '', '', []);
   time: Date = new Date();
-  task: Task = new Task(0,'','','','',0,this.time,'','',);
-  
+  task: Task = new Task(0, '', '', '', '', 0, this.time, '', '',);
+
 
   currentUser: string = "John Doe";
 
@@ -25,25 +25,26 @@ export class TodolistComponent implements OnInit {
   selectedTask: Task | null = null;
   selectedFunctionality: Functionality | null = null;
   canDeleteFunctionality: boolean = true;
-  showFunctionalityForm: boolean = false; 
+  showFunctionalityForm: boolean = false;
   functionalityEditMode: boolean = false;
-  
+
   defoulttaskStatus: string = "To Do";
   editIndex: number | null = null;
   taskInfoDialogOpen: boolean = false;
-  functionalityInfoDialogOpen:  boolean = false;
+  functionalityInfoDialogOpen: boolean = false;
 
   constructor(private localStorageService: LocalStorageService) { }
 
   ngOnInit(): void {
-    this.taskArray = this.localStorageService.getAllTasks();
+
     this.functionalityArray = this.localStorageService.getAllFunctionalities();
     if (this.functionalityArray.length == 0) {
       this.addDefaultFunctionality();
     }
-    this.selectedFunctionality = this.functionalityArray[0]; 
+    this.selectedFunctionality = this.functionalityArray[0];
+    this.taskArray = this.localStorageService.getAllTasks(this.selectedFunctionality?.id);
     this.functionalityValidation()
-    
+
   }
   addDefaultFunctionality() {
     const date = new Date();
@@ -55,15 +56,15 @@ export class TodolistComponent implements OnInit {
       this.currentUser,
       [],
     );
-  
+
     this.localStorageService.addFunctionality(newFunctionality);
     this.functionalityArray = this.localStorageService.getAllFunctionalities();
   }
-  functionalityValidation(){
-    if(this.selectedFunctionality?.name == "Prace Organizacyjne"){
+  functionalityValidation() {
+    if (this.selectedFunctionality?.name == "Prace Organizacyjne") {
       this.canDeleteFunctionality = false;
     }
-    else{
+    else {
       this.canDeleteFunctionality = true;
     }
   }
@@ -74,9 +75,17 @@ export class TodolistComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
+
     const date = new Date();
+    var idTask;
+    if (this.taskArray.length == 0) {
+      idTask = 0;
+    }
+    else {
+      idTask = this.taskArray.length;
+    }
     const newTask: Task = new Task(
-      this.taskArray.length + 1, // Używamy null na razie
+      idTask,
       this.task.name,
       this.task.type,
       this.task.description,
@@ -86,24 +95,25 @@ export class TodolistComponent implements OnInit {
       this.selectedFunctionality?.name ? this.selectedFunctionality.name.toString() : '', // Używamy null na razie
       this.defoulttaskStatus
     );
-  
-    this.localStorageService.addTask(newTask);
-    this.taskArray = this.localStorageService.getAllTasks();
+    const tasksId = this.selectedFunctionality?.id ? this.selectedFunctionality.id : 0
+    this.localStorageService.addTask(newTask, tasksId);
+    this.taskArray = this.localStorageService.getAllTasks(tasksId);
     form.reset();
     this.showTaskForm = false;
   }
 
   onDelete(index: number) {
     const taskToDelete = this.taskArray[index];
-    this.localStorageService.deleteTask(taskToDelete.id);
-    this.taskArray = this.localStorageService.getAllTasks();
+    const tasksId = this.selectedFunctionality?.id ? this.selectedFunctionality.id : 0
+    this.localStorageService.deleteTask(taskToDelete.id, tasksId);
+    this.taskArray = this.localStorageService.getAllTasks(tasksId);
   }
   onEdit(index: number) {
     this.showTaskForm = !this.showTaskForm;
     this.taskEditMode = true;
     this.editIndex = index;
     this.selectedTask = this.taskArray[this.editIndex];
-    if(this.selectedTask){
+    if (this.selectedTask) {
       this.task = {
         id: this.selectedTask.id,
         name: this.selectedTask.name,
@@ -116,23 +126,25 @@ export class TodolistComponent implements OnInit {
         taskStatus: this.selectedTask.taskStatus,
       };
     }
-    
+
   }
   openTaskInfoDialog(index: number) {
     this.selectedTask = this.taskArray[index];
     this.taskInfoDialogOpen = true;
   }
-  
+
   closeTaskInfoDialog() {
     this.selectedTask = null;
     this.taskInfoDialogOpen = false;
   }
   infoFunctionalityForm() {
     debugger;
-    // this.selectedFunctionality = this.functionalityArray[0];
+    this.functionalityArray = this.localStorageService.getAllFunctionalities();
+    const tasksId = this.selectedFunctionality?.id ? this.selectedFunctionality.id : 0
+    this.selectedFunctionality = this.functionalityArray[tasksId];
     this.functionalityInfoDialogOpen = true;
   }
-  
+
   closeFunctionalityInfoDialog() {
     this.functionalityInfoDialogOpen = false;
   }
@@ -144,6 +156,9 @@ export class TodolistComponent implements OnInit {
     this.taskArray[editedTaskIndex].priority = this.task.priority;
     this.taskArray[editedTaskIndex].effort = this.task.effort;
 
+    const tasksId = this.selectedFunctionality?.id ? this.selectedFunctionality.id : 0;
+    this.localStorageService.updateTask(this.taskArray[editedTaskIndex], tasksId);
+
     taskForm.reset();
     this.resetTask();
     this.showTaskForm = false;
@@ -151,8 +166,11 @@ export class TodolistComponent implements OnInit {
 
 
   onFunctionalityChange() {
+
     this.showFunctionalityForm = false;
     this.functionalityValidation();
+    const tasksId = this.selectedFunctionality?.id ? this.selectedFunctionality.id : 0
+    this.taskArray = this.localStorageService.getAllTasks(tasksId);
   }
 
   onFunctionalitySubmit(functionalityForm: NgForm) {
@@ -164,28 +182,30 @@ export class TodolistComponent implements OnInit {
         this.functionalityArray[editedFunctionalityIndex].name = this.functionality.name;
         this.functionalityArray[editedFunctionalityIndex].description = this.functionality.description;
         this.functionalityArray[editedFunctionalityIndex].priority = this.functionality.priority;
+        const tasksId = this.selectedFunctionality?.id ? this.selectedFunctionality.id : 0;
+        this.localStorageService.editFunctionality(this.functionality, tasksId);
       }
     } else {
       // Dodawanie nowej funkcjonalności
       const newFunctionality = new Functionality(
         // Przypisz unikalne ID, np. na podstawie długości tablicy
-        this.functionalityArray.length + 1,
+        this.functionalityArray.length,
         this.functionality.name,
         this.functionality.description,
         this.functionality.priority,
         this.currentUser,
-        this.taskArray
+        []
       );
       this.localStorageService.addFunctionality(newFunctionality)
       this.functionalityArray = this.localStorageService.getAllFunctionalities();
-      this.selectedFunctionality = this.functionalityArray[0]; 
+      this.selectedFunctionality = this.functionalityArray[0];
     }
-  
+
     functionalityForm.reset();
     this.showFunctionalityForm = false;
     this.resetFunctionality();
   }
-  
+
   resetFunctionality() {
     this.functionality = {
       id: 0,
@@ -200,7 +220,7 @@ export class TodolistComponent implements OnInit {
     this.task = {
       id: 0,
       name: '',
-      type:'',
+      type: '',
       description: '',
       priority: '',
       effort: 0,
@@ -218,9 +238,8 @@ export class TodolistComponent implements OnInit {
   editFunctionalityForm() {
     this.showFunctionalityForm = !this.showFunctionalityForm;
     this.functionalityEditMode = true;
-  
+
     if (this.selectedFunctionality) {
-      // Skopiuj wartości z wybranej funkcjonalności do właściwości `functionality`
       this.functionality = {
         id: this.selectedFunctionality.id,
         name: this.selectedFunctionality.name,
@@ -230,11 +249,10 @@ export class TodolistComponent implements OnInit {
         tasks: this.selectedFunctionality.tasks
       };
     } else {
-      // Jeśli żadna funkcjonalność nie jest wybrana, zresetuj wartości właściwości `functionality`
       this.resetFunctionality();
     }
   }
-  
+
   deleteFunctionalityForm() {
     if (this.selectedFunctionality) {
       const functionalityIndex = this.functionalityArray.findIndex(func => func.id === this.selectedFunctionality?.id);
@@ -244,23 +262,24 @@ export class TodolistComponent implements OnInit {
       }
     }
     this.functionalityArray = this.localStorageService.getAllFunctionalities();
-    this.selectedFunctionality = this.functionalityArray[0]; 
+    this.selectedFunctionality = this.functionalityArray[0];
     this.showFunctionalityForm = false;
     this.functionalityValidation();
     this.resetFunctionality();
   }
 
-  
+
   onFunctionalitySelectionChange() {
-    
+
   }
 
   onTaskStatusChange(newStatus: string, task: any) {
-    debugger;
+
     task.taskStatus = newStatus;
-    this.localStorageService.updateTask(task);
+    const tasksId = this.selectedFunctionality?.id ? this.selectedFunctionality.id : 0
+    this.localStorageService.updateTask(task, tasksId);
   }
-  
+
   countTasksByStatus(status: string): number {
     return this.taskArray.filter(task => task.taskStatus === status).length;
   }

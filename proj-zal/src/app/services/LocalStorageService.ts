@@ -26,38 +26,61 @@ export class LocalStorageService {
   }
 
   // Metoda do dodawania nowego zadania
-  addTask(task: Task): void {
-    const tasks: Task[] = this.getData('tasks') || [];
+  addTask(task: Task, tasksId: number): void {
+
+    const functionalities: Functionality[] = this.getData('functionalities') || [];
+    const tasks: Task[] = functionalities[tasksId].tasks
     tasks.push(task);
-    this.saveData('tasks', tasks);
+    this.saveData('functionalities', functionalities);
   }
 
   // Metoda do aktualizacji istniejącego zadania
-  updateTask(task: Task): void {
-    const tasks: Task[] = this.getData('tasks') || [];
+  updateTask(task: Task, tasksId: number): void {
+
+    const functionalities: Functionality[] = this.getData('functionalities') || [];
+    const tasks: Task[] = functionalities[tasksId].tasks
     const index = tasks.findIndex(t => t.id === task.id);
     if (index !== -1) {
       tasks[index] = task;
-      this.saveData('tasks', tasks);
+      this.saveData('functionalities', functionalities);
     }
   }
 
   // Metoda do usuwania zadania
-  deleteTask(taskId: number): void {
-    const tasks: Task[] = this.getData('tasks') || [];
-    const updatedTasks = tasks.filter(t => t.id !== taskId);
-    this.saveData('tasks', updatedTasks);
+  deleteTask(taskId: number, tasksId: number): void {
+
+    var functionalities: Functionality[] = this.getData('functionalities') || [];
+    functionalities[tasksId].tasks.forEach((element, index) => {
+      if (element.id === taskId) {
+        functionalities[tasksId].tasks.splice(index, 1)
+      }
+    });
+    this.saveData('functionalities', functionalities);
   }
 
   // Metoda do pobierania wszystkich zadań
-  getAllTasks(): Task[] {
-    return this.getData('tasks') || [];
+  getAllTasks(tasksId: number): Task[] {
+
+    const functionalities: Functionality[] = this.getData('functionalities') || [];
+    var tasks: Task[] = functionalities[tasksId]?.tasks || [];
+
+    return tasks;
   }
 
   addFunctionality(functionality: Functionality): void {
     const functionalities: Functionality[] = this.getData('functionalities') || [];
     functionalities.push(functionality);
     this.saveData('functionalities', functionalities);
+  }
+  editFunctionality(functionality: Functionality, tasksId: number): void {
+
+    const functionalityList: Functionality[] = this.getData('functionalities') || [];
+    const index = functionalityList.findIndex(t => t.id === functionality.id);
+    if (index !== -1) {
+      functionalityList[index] = functionality;
+      this.saveData('functionalities', functionalityList);
+    }
+    this.saveData('functionalities', functionalityList);
   }
   deleteFunctionality(functionalityId: number): void {
     const functionalities: Functionality[] = this.getData('functionalities') || [];
